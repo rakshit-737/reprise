@@ -1,0 +1,77 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "approval_id": {
+      "minLength": 1,
+      "title": "Approval Id",
+      "type": "string"
+    },
+    "approver": {
+      "minLength": 1,
+      "title": "Approver",
+      "type": "string"
+    },
+    "consumed_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Consumed At"
+    },
+    "created_at": {
+      "minLength": 1,
+      "title": "Created At",
+      "type": "string"
+    },
+    "environment_id": {
+      "minLength": 1,
+      "title": "Environment Id",
+      "type": "string"
+    },
+    "expires_at": {
+      "minLength": 1,
+      "title": "Expires At",
+      "type": "string"
+    },
+    "nonce": {
+      "minLength": 20,
+      "title": "Nonce",
+      "type": "string"
+    },
+    "proposal_digest": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Proposal Digest",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "0.1",
+      "default": "0.1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "validation_digest": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Validation Digest",
+      "type": "string"
+    }
+  },
+  "required": [
+    "approval_id",
+    "environment_id",
+    "proposal_digest",
+    "validation_digest",
+    "approver",
+    "nonce",
+    "created_at",
+    "expires_at"
+  ],
+  "title": "ApprovalContract",
+  "type": "object"
+}

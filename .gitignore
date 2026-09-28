@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Local configuration and generated reports
+.env
+.env.*
+!/.env.example
+artifacts/
+reports/generated/
+
+# Tooling and OS files
+.DS_Store
+Thumbs.db
+*.log
+*.db
+*.sqlite
+*.sqlite3
+
+# REPRISE local lab state
+.reprise/
+graphify-out/

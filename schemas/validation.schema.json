@@ -1,0 +1,199 @@
+{
+  "$defs": {
+    "BehaviorValidationContract": {
+      "additionalProperties": false,
+      "properties": {
+        "after_allowed": {
+          "title": "After Allowed",
+          "type": "boolean"
+        },
+        "before_allowed": {
+          "title": "Before Allowed",
+          "type": "boolean"
+        },
+        "coverage_warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Coverage Warnings",
+          "type": "array"
+        },
+        "expected_after": {
+          "enum": [
+            "blocked",
+            "allowed"
+          ],
+          "title": "Expected After",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "paths_after": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Paths After",
+          "type": "array"
+        }
+      },
+      "required": [
+        "before_allowed",
+        "after_allowed",
+        "expected_after",
+        "passed",
+        "paths_after",
+        "coverage_warnings"
+      ],
+      "title": "BehaviorValidationContract",
+      "type": "object"
+    },
+    "BenignWorkflowValidationContract": {
+      "additionalProperties": false,
+      "properties": {
+        "after_allowed": {
+          "title": "After Allowed",
+          "type": "boolean"
+        },
+        "before_allowed": {
+          "title": "Before Allowed",
+          "type": "boolean"
+        },
+        "coverage_warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Coverage Warnings",
+          "type": "array"
+        },
+        "expected_after": {
+          "enum": [
+            "blocked",
+            "allowed"
+          ],
+          "title": "Expected After",
+          "type": "string"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "paths_after": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Paths After",
+          "type": "array"
+        }
+      },
+      "required": [
+        "before_allowed",
+        "after_allowed",
+        "expected_after",
+        "passed",
+        "paths_after",
+        "coverage_warnings",
+        "name"
+      ],
+      "title": "BenignWorkflowValidationContract",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attack": {
+      "$ref": "#/$defs/BehaviorValidationContract"
+    },
+    "benign_workflows": {
+      "items": {
+        "$ref": "#/$defs/BenignWorkflowValidationContract"
+      },
+      "title": "Benign Workflows",
+      "type": "array"
+    },
+    "claim_evidence_complete": {
+      "title": "Claim Evidence Complete",
+      "type": "boolean"
+    },
+    "counterexamples": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Counterexamples",
+      "type": "array"
+    },
+    "coverage_warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Coverage Warnings",
+      "type": "array"
+    },
+    "environment_id": {
+      "minLength": 1,
+      "title": "Environment Id",
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "proposal_digest": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Proposal Digest",
+      "type": "string"
+    },
+    "proposal_id": {
+      "minLength": 1,
+      "title": "Proposal Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "0.1",
+      "default": "0.1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "passed",
+        "failed",
+        "incomplete"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "target_state_match": {
+      "title": "Target State Match",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "environment_id",
+    "proposal_id",
+    "proposal_digest",
+    "status",
+    "target_state_match",
+    "claim_evidence_complete",
+    "attack",
+    "benign_workflows",
+    "coverage_warnings",
+    "counterexamples",
+    "limitations"
+  ],
+  "title": "ShadowValidationContract",
+  "type": "object"
+}

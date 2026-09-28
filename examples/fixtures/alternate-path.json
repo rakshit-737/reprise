@@ -1,0 +1,77 @@
+{
+  "schema_version": "0.1",
+  "environment": {
+    "id": "owned-demo-replay",
+    "mode": "replay",
+    "authorizers": ["RBAC"],
+    "snapshot_observed_at": "2026-09-27T10:02:00Z",
+    "snapshot_complete": true,
+    "gaps": []
+  },
+  "audit_events": [
+    {
+      "audit_id": "demo-binding-create",
+      "stage": "ResponseComplete",
+      "stage_timestamp": "2026-09-27T10:00:00Z",
+      "verb": "create",
+      "user": {"username": "system:serviceaccount:reprise-demo:deployment-automation"},
+      "object_ref": {
+        "api_group": "rbac.authorization.k8s.io", "resource": "rolebindings",
+        "namespace": "reprise-demo", "name": "diagnostics-access"
+      },
+      "response_code": 201
+    },
+    {
+      "audit_id": "demo-canary-read",
+      "stage": "ResponseComplete",
+      "stage_timestamp": "2026-09-27T10:01:00Z",
+      "verb": "get",
+      "user": {"username": "system:serviceaccount:reprise-demo:preview-bot"},
+      "object_ref": {
+        "api_group": "", "resource": "secrets",
+        "namespace": "reprise-demo", "name": "synthetic-canary"
+      },
+      "response_code": 200
+    }
+  ],
+  "roles": [
+    {
+      "kind": "Role", "name": "canary-reader", "namespace": "reprise-demo",
+      "uid": "fixture-role-canary", "resource_version": "10", "aggregated": false,
+      "rules": [{"api_groups": [""], "resources": ["secrets"], "verbs": ["get"], "resource_names": ["synthetic-canary"]}]
+    },
+    {
+      "kind": "Role", "name": "config-reader", "namespace": "reprise-demo",
+      "uid": "fixture-role-config", "resource_version": "11", "aggregated": false,
+      "rules": [{"api_groups": [""], "resources": ["configmaps"], "verbs": ["get"], "resource_names": ["app-config"]}]
+    }
+  ],
+  "role_bindings": [
+    {
+      "kind": "RoleBinding", "name": "diagnostics-access", "namespace": "reprise-demo",
+      "uid": "fixture-binding-diagnostics", "resource_version": "20",
+      "subjects": [{"kind": "ServiceAccount", "name": "preview-bot", "namespace": "reprise-demo"}],
+      "role_ref": {"kind": "Role", "name": "canary-reader", "api_group": "rbac.authorization.k8s.io"}
+    },
+    {
+      "kind": "RoleBinding", "name": "legacy-debug-access", "namespace": "reprise-demo",
+      "uid": "fixture-binding-legacy", "resource_version": "21",
+      "subjects": [{"kind": "ServiceAccount", "name": "preview-bot", "namespace": "reprise-demo"}],
+      "role_ref": {"kind": "Role", "name": "canary-reader", "api_group": "rbac.authorization.k8s.io"}
+    },
+    {
+      "kind": "RoleBinding", "name": "application-config", "namespace": "reprise-demo",
+      "uid": "fixture-binding-config", "resource_version": "22",
+      "subjects": [{"kind": "ServiceAccount", "name": "preview-bot", "namespace": "reprise-demo"}],
+      "role_ref": {"kind": "Role", "name": "config-reader", "api_group": "rbac.authorization.k8s.io"}
+    }
+  ],
+  "workflow_contracts": [
+    {
+      "name": "Application ConfigMap read",
+      "principal": "system:serviceaccount:reprise-demo:preview-bot",
+      "action": {"verb": "get", "api_group": "", "resource": "configmaps", "namespace": "reprise-demo", "resource_name": "app-config"},
+      "expected": "allowed"
+    }
+  ]
+}

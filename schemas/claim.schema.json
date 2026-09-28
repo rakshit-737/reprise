@@ -1,0 +1,51 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "claim_type": {
+      "minLength": 1,
+      "title": "Claim Type",
+      "type": "string"
+    },
+    "epistemic_status": {
+      "enum": [
+        "observed",
+        "derived_under_supported_model",
+        "hypothesis",
+        "contradicted",
+        "unknown"
+      ],
+      "title": "Epistemic Status",
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "statement": {
+      "minLength": 1,
+      "title": "Statement",
+      "type": "string"
+    },
+    "support": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Support",
+      "type": "array"
+    }
+  },
+  "required": [
+    "claim_type",
+    "epistemic_status",
+    "statement",
+    "support",
+    "limitations"
+  ],
+  "title": "ClaimContract",
+  "type": "object"
+}

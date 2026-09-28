@@ -1,0 +1,3 @@
+{"type":"ADDED","object":{"kind":"Role","metadata":{"name":"demo-reader","namespace":"reprise-demo","uid":"watch-role-uid","resourceVersion":"100"},"rules":[{"apiGroups":[""],"resources":["configmaps"],"verbs":["get"]}],"observedAt":"2026-09-28T08:00:00Z"}}
+{"type":"MODIFIED","object":{"kind":"Role","metadata":{"name":"demo-reader","namespace":"reprise-demo","uid":"watch-role-uid","resourceVersion":"101"},"rules":[{"apiGroups":[""],"resources":["configmaps","pods"],"verbs":["get"]}],"observedAt":"2026-09-28T08:01:00Z"}}
+{"type":"BOOKMARK","object":{"metadata":{"resourceVersion":"101"}}}
