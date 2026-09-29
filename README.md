@@ -157,6 +157,8 @@ See [`docs/implementation-plan.md`](docs/implementation-plan.md) for the
 acceptance-gated roadmap and [`docs/implementation-ledger.md`](docs/implementation-ledger.md)
 for the work completed in this folder.
 
+Contributor attribution: [`CONTRIBUTORS.md`](CONTRIBUTORS.md)
+
 ## Safety boundary
 
 This repository is read-only with respect to any observed environment. It does
