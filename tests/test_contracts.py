@@ -6,6 +6,7 @@ from pydantic import ValidationError
 from reprise.contracts import (
     CandidateProposalContract,
     ClaimContract,
+    RemediationProposalContract,
     validate_evidence_package,
 )
 from reprise.fixture import load_fixture
@@ -46,3 +47,14 @@ def test_candidate_contract_rejects_effect_mismatch(fixture_file):
     candidate["tested_action_blocked_under_supported_model"] = True
     with pytest.raises(ValidationError):
         CandidateProposalContract.model_validate(candidate)
+
+
+def test_package_rejects_proposal_bound_to_different_action(fixture_file):
+    package = build_evidence_package(load_fixture(fixture_file()))
+    tampered = copy.deepcopy(package)
+    candidate = tampered["findings"][0]["candidate_proposals"][0]
+    candidate["proposal"]["security_objective"]["action"]["resource"] = "configmaps"
+    proposal = RemediationProposalContract.model_validate(candidate["proposal"])
+    candidate["proposal_digest"] = proposal.digest()
+    with pytest.raises(ValueError, match="finding action"):
+        validate_evidence_package(tampered)

@@ -181,6 +181,20 @@ class BehaviorValidationContract(ContractModel):
     paths_after: list[dict[str, Any]]
     coverage_warnings: list[str]
 
+    @model_validator(mode="after")
+    def validate_behavior(self) -> BehaviorValidationContract:
+        expected_allowed = self.expected_after == "allowed"
+        if self.passed:
+            if not self.before_allowed:
+                raise ValueError("a passed behavior requires an allowed baseline")
+            if self.after_allowed != expected_allowed:
+                raise ValueError("passed behavior does not meet its expected after-state")
+            if bool(self.paths_after) != self.after_allowed:
+                raise ValueError("passed behavior paths do not match its after-state")
+            if self.coverage_warnings:
+                raise ValueError("passed behavior cannot contain coverage warnings")
+        return self
+
 
 class BenignWorkflowValidationContract(BehaviorValidationContract):
     name: str = Field(min_length=1)
@@ -192,6 +206,7 @@ class ShadowValidationContract(ContractModel):
     proposal_id: str = Field(min_length=1)
     proposal_digest: str = Field(min_length=64, max_length=64)
     status: Literal["passed", "failed", "incomplete"]
+    snapshot_match: bool
     target_state_match: bool
     claim_evidence_complete: bool
     attack: BehaviorValidationContract
@@ -203,10 +218,10 @@ class ShadowValidationContract(ContractModel):
     @model_validator(mode="after")
     def validate_status(self) -> ShadowValidationContract:
         all_behaviors_passed = self.attack.passed and all(workflow.passed for workflow in self.benign_workflows)
-        if self.status == "passed" and not (self.target_state_match and self.claim_evidence_complete and all_behaviors_passed):
-            raise ValueError("passed validation requires matching target state, evidence, and behaviors")
-        if self.status == "passed" and self.coverage_warnings:
-            raise ValueError("passed validation cannot contain coverage warnings")
+        if self.status == "passed" and not (self.snapshot_match and self.target_state_match and self.claim_evidence_complete and all_behaviors_passed):
+            raise ValueError("passed validation requires matching snapshot, target state, evidence, and behaviors")
+        if self.status == "passed" and (self.coverage_warnings or self.counterexamples):
+            raise ValueError("passed validation cannot contain warnings or counterexamples")
         return self
 
 
@@ -266,6 +281,10 @@ def validate_evidence_package(package: dict[str, Any]) -> EvidencePackageContrac
             proposal = candidate.proposal
             if proposal.environment_id != finding.environment_id:
                 raise ValueError(f"proposal {proposal.proposal_id} crosses the finding environment boundary")
+            if proposal.security_objective.principal != finding.principal:
+                raise ValueError(f"proposal {proposal.proposal_id} is not bound to the finding principal")
+            if proposal.security_objective.action != finding.action:
+                raise ValueError(f"proposal {proposal.proposal_id} is not bound to the finding action")
             if proposal.snapshot_artifact_id not in artifact_ids:
                 raise ValueError(f"proposal {proposal.proposal_id} references an unknown snapshot artifact")
     return model

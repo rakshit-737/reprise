@@ -167,6 +167,10 @@
       "title": "Schema Version",
       "type": "string"
     },
+    "snapshot_match": {
+      "title": "Snapshot Match",
+      "type": "boolean"
+    },
     "status": {
       "enum": [
         "passed",
@@ -186,6 +190,7 @@
     "proposal_id",
     "proposal_digest",
     "status",
+    "snapshot_match",
     "target_state_match",
     "claim_evidence_complete",
     "attack",

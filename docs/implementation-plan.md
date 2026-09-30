@@ -37,6 +37,10 @@ The local approval gateway now covers the contract portion of the approval phase
 it binds one passed validation and proposal digest to an environment, expiry,
 approver field, and single-use nonce. It is not an identity provider or executor.
 
+The validation boundary is fail-closed on environment mismatch, snapshot drift,
+finding/proposal action mismatch, contradictory behavior results, coverage
+warnings, and counterexamples.
+
 ## Next slice
 
 Add an authenticated audit-sink adapter, live resource-watch collection, and a

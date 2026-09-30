@@ -56,6 +56,11 @@ def validate_candidate(
 
     finding, candidate_raw, candidate = _candidate(package, finding_index=finding_index, label=label)
     proposal = candidate.proposal
+    package_environment_id = package["environment"].get("id")
+    fixture_environment_id = fixture.environment.get("id")
+    if package_environment_id != fixture_environment_id or finding["environment_id"] != fixture_environment_id:
+        raise ValueError("fixture, package, and finding environments do not match")
+    snapshot_match = proposal.snapshot_artifact_id == fixture.snapshot_artifact_id
     target_dicts = [mutation.target.model_dump(mode="json") for mutation in proposal.mutations]
     bindings_by_uid = {binding.uid: binding for binding in fixture.role_bindings}
     actual_targets = [_binding_target(bindings_by_uid[target["uid"]]) for target in target_dicts if target["uid"] in bindings_by_uid]
@@ -123,7 +128,9 @@ def validate_candidate(
     claim_evidence_complete = bool(finding["claim_evidence_complete"])
     if not claim_evidence_complete:
         counterexamples.append("material finding claims do not have complete evidence references")
-    incomplete = bool(coverage_warnings) or not target_state_match or not claim_evidence_complete
+    if not snapshot_match:
+        counterexamples.append("proposal snapshot artifact does not match the supplied fixture snapshot")
+    incomplete = bool(coverage_warnings) or not snapshot_match or not target_state_match or not claim_evidence_complete
     behavior_failed = not attack.passed or any(not item.passed for item in benign_results)
     status = "incomplete" if incomplete else ("failed" if behavior_failed else "passed")
     result = {
@@ -131,6 +138,7 @@ def validate_candidate(
         "proposal_id": proposal.proposal_id,
         "proposal_digest": candidate.proposal_digest,
         "status": status,
+        "snapshot_match": snapshot_match,
         "target_state_match": target_state_match,
         "claim_evidence_complete": claim_evidence_complete,
         "attack": attack.model_dump(mode="json"),

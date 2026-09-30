@@ -289,6 +289,41 @@ Add authenticated identity and PostgreSQL-backed approval/case repositories,
 then build a separately enrolled lab executor that accepts only consumed exact
 approvals.
 
+## 2026-09-30 — Validation and approval fail-closed hardening
+
+### Completed
+
+- Bound validation to the same fixture, evidence-package, finding, and proposal
+  environment.
+- Added an explicit snapshot-match invariant; snapshot drift now yields
+  `incomplete` and cannot become an approval.
+- Bound proposals to the finding principal and exact action during evidence
+  package validation.
+- Strengthened validation contracts so a forged `passed` behavior cannot claim a
+  contradictory after-state, path list, coverage warning, or baseline.
+- Required passed validations to have no counterexamples or coverage warnings.
+
+### Validation
+
+- `uv run ruff format --check src tests scripts` — passed.
+- `uv run ruff check src tests scripts` — passed.
+- `uv run pytest -q` — passed: 87 tests.
+- Schema exporter — passed.
+- Existing naive-fix rejection, corrected-fix pass, and exact approval smoke
+  paths remain covered.
+
+### Deliberate limitations
+
+- These checks protect the local deterministic boundary; they do not provide
+  authenticated human identity or independently immutable storage.
+- Live lab execution, PostgreSQL repositories, and production change control
+  remain intentionally unimplemented.
+
+### Next work
+
+Add authenticated identity and PostgreSQL-backed repositories, then implement a
+separately enrolled lab executor with independent preflight checks.
+
 ## 2026-09-27 — Content-addressed evidence persistence
 
 ### Completed

@@ -13,6 +13,11 @@ capability bound to:
 The gateway rejects failed validation, cross-environment use, digest changes,
 wrong nonces, expired approvals, and replay after consumption.
 
+Because a `passed` validation contract itself requires snapshot agreement,
+target-state agreement, evidence completeness, behavior agreement, and no
+counterexamples, approval creation fails closed when any of those invariants are
+tampered with.
+
 ## Local demonstration
 
 Create an approval from a passed validation artifact:
